@@ -30,14 +30,14 @@ function WorkProgressChart({ work }) {
 
         return (
             <div data-name="work-progress-chart" data-file="components/WorkProgressChart.js" 
-                 className="glass-effect rounded-2xl p-4 text-center hover:scale-105 transition-transform duration-300">
+                 className="glass-effect rounded-xl p-4 text-center hover:scale-105 transition-transform duration-300">
                 <div className="relative w-20 h-20 mx-auto mb-3">
                     <svg className="w-20 h-20 transform -rotate-90" viewBox="0 0 80 80">
                         {/* Background circle */}
                         <circle
                             cx="40"
                             cy="40"
-                            r={radius}
+                            r="32"
                             stroke="#E5E7EB"
                             strokeWidth="6"
                             fill="transparent"
@@ -46,12 +46,12 @@ function WorkProgressChart({ work }) {
                         <circle
                             cx="40"
                             cy="40"
-                            r={radius}
+                            r="32"
                             stroke={work.statusColor}
                             strokeWidth="6"
                             fill="transparent"
-                            strokeDasharray={strokeDasharray}
-                            strokeDashoffset={strokeDashoffset}
+                            strokeDasharray={2 * Math.PI * 32}
+                            strokeDashoffset={2 * Math.PI * 32 - (animatedProgress / 100) * 2 * Math.PI * 32}
                             strokeLinecap="round"
                             className="transition-all duration-1000 ease-out"
                             style={{
@@ -67,23 +67,23 @@ function WorkProgressChart({ work }) {
                     </div>
                 </div>
                 
-                <h4 className="text-xs font-semibold text-gray-800 mb-1 h-8 overflow-hidden" title={work.obra}>
-                    {work.obra.length > 25 ? work.obra.substring(0, 25) + '...' : work.obra}
+                <h4 className="text-sm font-semibold text-gray-800 mb-1 h-8 overflow-hidden leading-4" title={work.obra}>
+                    {work.obra.length > 30 ? work.obra.substring(0, 30) + '...' : work.obra}
                 </h4>
                 
-                <p className="text-xs text-red-600 mb-1 font-medium">{work.municipalidad}</p>
+                <p className="text-sm text-red-600 mb-1 font-medium truncate">{work.municipalidad}</p>
                 
-                <div className="text-xs text-gray-600 mb-1">
+                <div className="text-sm text-gray-600 mb-1">
                     {work.estado === 'terminado' ? 'Terminado' :
                      work.estado === 'si' ? 'En ejecución' :
                      work.estado === 'interrumpido' ? 'Interrumpido' : 'No iniciado'}
                 </div>
                 
-                <div className="text-xs text-green-600 font-semibold">
+                <div className="text-sm text-green-600 font-semibold">
                     S/ {(Number(work.inversion) / 1000).toFixed(0)}K
                 </div>
                 
-                <div className="text-xs text-gray-500 mt-1">
+                <div className="text-sm text-gray-500 mt-1 truncate">
                     {work.codigo}
                 </div>
             </div>

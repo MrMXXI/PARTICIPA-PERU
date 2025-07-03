@@ -14,7 +14,7 @@ function Header({ user, onLogout }) {
                     <div className="flex items-center space-x-3">
                         <i data-lucide="building-2" className="w-8 h-8 text-red-500"></i>
                         <h1 className="text-2xl font-bold text-gray-800">
-                            Sistema Presupuestos Lima
+                            Sistema Participa Perú
                         </h1>
                     </div>
                     {user && (

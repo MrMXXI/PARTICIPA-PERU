@@ -94,13 +94,13 @@ function PublicChartsPreview() {
         return (
             <div data-name="public-charts-preview" data-file="components/PublicChartsPreview.js" className="space-y-6">
                 {/* Summary Statistics */}
-                <div className="glass-effect rounded-2xl p-6">
-                    <h2 className="text-2xl font-bold text-gray-800 mb-4 flex items-center">
-                        <i data-lucide="activity" className="w-6 h-6 mr-2 text-red-500"></i>
+                <div className="glass-effect rounded-2xl p-4">
+                    <h2 className="text-lg font-bold text-gray-800 mb-3 flex items-center">
+                        <i data-lucide="activity" className="w-5 h-5 mr-2 text-red-500"></i>
                         Dashboard de Obras Públicas
                     </h2>
                     
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
                         <div className="text-center">
                             <div className="text-2xl font-bold text-gray-800">{totalStats.total}</div>
                             <div className="text-sm text-gray-600">Total Obras</div>
@@ -121,33 +121,33 @@ function PublicChartsPreview() {
                 </div>
 
                 {/* Individual Work Progress Charts */}
-                <div className="glass-effect rounded-2xl p-6">
-                    <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center">
-                        <i data-lucide="target" className="w-5 h-5 mr-2 text-blue-500"></i>
+                <div className="glass-effect rounded-2xl p-4">
+                    <h3 className="text-base font-bold text-gray-800 mb-3 flex items-center">
+                        <i data-lucide="target" className="w-4 h-4 mr-2 text-blue-500"></i>
                         Progreso Individual por Obra
                     </h3>
                     
                     {works.length > 0 ? (
-                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                            {works.map((work) => (
+                        <div className="grid grid-cols-3 gap-4">
+                            {works.slice(0, 6).map((work) => (
                                 <WorkProgressChart key={work.id} work={work} />
                             ))}
                         </div>
                     ) : (
-                        <div className="text-center py-8">
-                            <i data-lucide="inbox" className="w-16 h-16 text-gray-300 mx-auto mb-4"></i>
-                            <p className="text-gray-600">No hay obras registradas</p>
+                        <div className="text-center py-6">
+                            <i data-lucide="inbox" className="w-12 h-12 text-gray-300 mx-auto mb-3"></i>
+                            <p className="text-gray-600 text-sm">No hay obras registradas</p>
                         </div>
                     )}
                 </div>
 
                 {/* Status Legend */}
-                <div className="glass-effect rounded-2xl p-6">
-                    <h3 className="text-lg font-bold text-gray-800 mb-4 flex items-center">
-                        <i data-lucide="info" className="w-5 h-5 mr-2 text-blue-500"></i>
+                <div className="glass-effect rounded-2xl p-4">
+                    <h3 className="text-base font-bold text-gray-800 mb-3 flex items-center">
+                        <i data-lucide="info" className="w-4 h-4 mr-2 text-blue-500"></i>
                         Leyenda de Estados
                     </h3>
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-2 gap-3">
                         <div className="flex items-center space-x-2">
                             <i data-lucide="check-circle" className="w-4 h-4 text-green-500"></i>
                             <span className="text-sm text-gray-700">Terminado (100%)</span>

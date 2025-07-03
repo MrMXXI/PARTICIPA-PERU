@@ -1,13 +1,27 @@
 function PublicWorks() {
     try {
         const [works, setWorks] = React.useState([]);
+        const [participations, setParticipations] = React.useState([]);
         const [loading, setLoading] = React.useState(true);
         const [filter, setFilter] = React.useState('');
+        const [filters, setFilters] = React.useState({});
+
+        const municipalities = [
+            'Lima Metropolitana', 'Ate', 'Barranco', 'Breña', 'Comas', 'Chorrillos',
+            'El Agustino', 'Jesús María', 'La Molina', 'La Victoria', 'Lince',
+            'Los Olivos', 'Magdalena del Mar', 'Miraflores', 'Pueblo Libre',
+            'Puente Piedra', 'Rímac', 'San Borja', 'San Isidro', 'San Juan de Lurigancho',
+            'San Juan de Miraflores', 'San Luis', 'San Martín de Porres', 'San Miguel',
+            'Santa Anita', 'Santiago de Surco', 'Surquillo', 'Villa El Salvador',
+            'Villa María del Triunfo'
+        ];
 
         const loadWorks = async () => {
             try {
-                const response = await trickleListObjects('budget_project', 100, true);
-                setWorks(response.items);
+                const worksResponse = await trickleListObjects('budget_project', 100, true);
+                const participationsResponse = await trickleListObjects('citizen_participation', 100, true);
+                setWorks(worksResponse.items);
+                setParticipations(participationsResponse.items);
             } catch (error) {
                 console.error('Error loading works:', error);
             } finally {
@@ -19,11 +33,36 @@ function PublicWorks() {
             loadWorks();
         }, []);
 
-        const filteredWorks = works.filter(work => 
-            work.objectData.municipalidad.toLowerCase().includes(filter.toLowerCase()) ||
-            work.objectData.obra.toLowerCase().includes(filter.toLowerCase()) ||
-            work.objectData.codigo.toLowerCase().includes(filter.toLowerCase())
-        );
+        const applyFilters = (works) => {
+            return works.filter(work => {
+                const data = work.objectData;
+                
+                // Text search
+                const matchesText = !filter || 
+                    data.municipalidad.toLowerCase().includes(filter.toLowerCase()) ||
+                    data.obra.toLowerCase().includes(filter.toLowerCase()) ||
+                    data.codigo.toLowerCase().includes(filter.toLowerCase());
+                
+                // Advanced filters
+                const matchesMunicipality = !filters.municipalidad || data.municipalidad === filters.municipalidad;
+                const matchesState = !filters.estado || data.estado === filters.estado;
+                const matchesMinInversion = !filters.inversionMin || Number(data.inversion) >= Number(filters.inversionMin);
+                const matchesMaxInversion = !filters.inversionMax || Number(data.inversion) <= Number(filters.inversionMax);
+                
+                let matchesDateRange = true;
+                if (filters.fechaDesde && filters.fechaHasta) {
+                    const workDate = new Date(data.fechaInicio);
+                    const fromDate = new Date(filters.fechaDesde);
+                    const toDate = new Date(filters.fechaHasta);
+                    matchesDateRange = workDate >= fromDate && workDate <= toDate;
+                }
+                
+                return matchesText && matchesMunicipality && matchesState && 
+                       matchesMinInversion && matchesMaxInversion && matchesDateRange;
+            });
+        };
+
+        const filteredWorks = applyFilters(works);
 
         const getStatusColor = (estado) => {
             switch (estado) {
@@ -58,19 +97,36 @@ function PublicWorks() {
                 <div className="glass-effect rounded-2xl p-6">
                     <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center">
                         <i data-lucide="building-2" className="w-8 h-8 mr-3 text-red-500"></i>
-                        Obras Públicas de Lima ({filteredWorks.length})
+                        Obras Públicas del Perú ({filteredWorks.length})
                     </h2>
                     
-                    <div className="mb-6">
+                    <div className="mb-6 flex gap-4">
                         <input
                             type="text"
                             value={filter}
                             onChange={(e) => setFilter(e.target.value)}
-                            className="form-input w-full px-4 py-3 rounded-lg focus:outline-none"
+                            className="form-input flex-1 px-4 py-3 rounded-lg focus:outline-none"
                             placeholder="Buscar por municipalidad, obra o código..."
                         />
+                        <button
+                            onClick={() => {}}
+                            className="btn-primary px-6 py-3 rounded-lg flex items-center space-x-2"
+                        >
+                            <i data-lucide="search" className="w-5 h-5"></i>
+                            <span>Buscar</span>
+                        </button>
                     </div>
                 </div>
+
+                <AdvancedFilters 
+                    onFiltersChange={setFilters} 
+                    municipalities={municipalities}
+                />
+
+                <ExportData 
+                    works={filteredWorks} 
+                    participations={participations}
+                />
 
                 <div className="glass-effect rounded-2xl p-6">
                     {filteredWorks.length === 0 ? (
